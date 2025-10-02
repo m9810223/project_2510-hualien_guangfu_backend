@@ -12,4 +12,27 @@ item_router = crud_router(
     update_schema=ItemSchema,
     path='/items',
     tags=['Items'],
+    included_methods=[
+        'create',
+        'read',
+        'read_multi',
+        'update',
+        'delete',
+        # "db_delete",
+    ],
+    # deleted_methods=[
+    #     "create",
+    #     "read",
+    #     "read_multi",
+    #     "update",
+    #     "delete",
+    #     "db_delete",
+    # ],
+    endpoint_names={
+        # "create": "add",
+        # "read": "fetch",
+        # "read_multi": "list",
+        # "update": "modify",
+        # "delete": "remove",
+    },
 )

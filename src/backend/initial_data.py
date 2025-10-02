@@ -8,15 +8,15 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-async def init() -> None:
-    await init_db()
+def init() -> None:
+    asyncio.run(init_db())
 
 
-async def main() -> None:
+def main() -> None:
     logger.info('Creating initial data')
-    await init()
+    init()
     logger.info('Initial data created')
 
 
 if __name__ == '__main__':
-    asyncio.run(main())
+    main()
