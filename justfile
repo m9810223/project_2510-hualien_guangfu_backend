@@ -43,13 +43,16 @@ pytest-app *args:
     {{ DCO }} run --rm -i app pytest {{ args }}
 
 # 執行 pytest 與產生 coverage
-[group('coverage')]
 [group('app')]
+[group('coverage')]
 [group('test')]
 pytest-app-cov *args: (pytest-app "--cov --cov-report=html --cov-report=term" args)
 
 # 打開 coverage
-[group('coverage')]
 [group('app')]
+[group('coverage')]
 pytest-app-cov-open:
     python -m webbrowser -t file://$(pwd)/src/app/htmlcov/function_index.html
+
+initial_data:
+    {{ DCO }} run --rm backend uv run python initial_data.py 
