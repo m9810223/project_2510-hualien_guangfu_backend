@@ -1,0 +1,16 @@
+name: hualien_guangfu_backend-docs # * CHANGE ME
+
+services:
+  docs:
+    tty: true
+    build:
+      dockerfile: docs/Dockerfile
+    environment:
+      - CI_COMMIT_SHA=${CI_COMMIT_SHA:-}
+    ports:
+      - ${PORT:-8000}:${PORT:-8000}
+    volumes:
+      - ./docs/:/docs/
+      - ./src/:/src/
+    entrypoint: [sh, -xc, exec $0 $$@]
+    command: mkdocs --color serve --dev-addr=0.0.0.0:${PORT:-8000} --strict

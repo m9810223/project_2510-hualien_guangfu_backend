@@ -1,0 +1,7 @@
+services:
+  backend:
+    ports:
+      - 8000:8000
+    command: ["fastapi", "run", "--workers", "4", "app/main.py", --reload]
+    volumes:
+      - ./src/backend/:/srv/backend/ # src code

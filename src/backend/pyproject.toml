@@ -1,0 +1,25 @@
+[project]
+name = "app"
+version = "0.1.0"
+requires-python = ">=3.12,<3.13"
+
+classifiers = [ "Programming Language :: Python :: 3 :: Only", "Programming Language :: Python :: 3.12" ]
+dependencies = [
+  "alembic<2,>=1.12.1",
+  "asyncpg>=0.30",
+  # Pin bcrypt until passlib supports the latest
+  "bcrypt==4.3",
+  "email-validator<3,>=2.1.post1",
+  "emails<1,>=0.6",
+  "fastapi[standard]<1,>=0.114.2",
+  "fastcrud>=0.17",
+  "passlib[bcrypt]<2,>=1.7.4",
+  "psycopg[binary]<4,>=3.1.13",
+  "psycopg2>=2.9.10",
+  "pydantic>2",
+  "pydantic-settings<3,>=2.2.1",
+  "pyjwt<3,>=2.8",
+  "python-multipart<1,>=0.0.7",
+  "sqlmodel<1,>=0.0.21",
+  "tenacity<9,>=8.2.3",
+]

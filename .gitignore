@@ -1,0 +1,11 @@
+__pycache__/
+
+.pytest_cache/
+.venv/
+
+/volumes/
+
+/.env.bak
+/.env.prod-secrets*
+
+/docs/
