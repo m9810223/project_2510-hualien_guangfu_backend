@@ -16,7 +16,7 @@ task_claim_router = APIRouter()
 
 @task_claim_router.post(
     '/task_claim',
-    tags=['TaskClaim'],
+    tags=['task_claim'],
 )
 async def create_task_claim(
     data: CreateTaskClaimSchema, user: CurrentActiveUserDepends, session: SessionDepends
@@ -35,7 +35,7 @@ task_claim_router.include_router(
         create_schema=CreateTaskClaimSchema,
         update_schema=UpdateTaskClaimSchema,
         path='/task_claim',
-        tags=['TaskClaim'],
+        tags=['task_claim'],
         create_deps=[],
         read_deps=[],
         read_multi_deps=[],

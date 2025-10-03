@@ -16,7 +16,7 @@ task_router = APIRouter()
 
 @task_router.post(
     '/task',
-    tags=['Task'],
+    tags=['task'],
 )
 async def create_task(data: CreateTaskSchema, user: CurrentActiveUserDepends, session: SessionDepends) -> Task:
     model = Task(**data.model_dump(), creator_id=user.id)
@@ -33,7 +33,7 @@ task_router.include_router(
         create_schema=CreateTaskSchema,
         update_schema=UpdateTaskSchema,
         path='/task',
-        tags=['Task'],
+        tags=['task'],
         create_deps=[],
         read_deps=[],
         read_multi_deps=[],
