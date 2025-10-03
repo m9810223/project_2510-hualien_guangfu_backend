@@ -50,6 +50,11 @@ task_router.include_router(
         ],
         filter_config=FilterConfig(
             is_deleted=lambda: False,
+            creator_id=None,
+            type=None,
+            status=None,
+            urgency=None,
+            danger_level=None,
         ),
         select_schema=Task,
     )

@@ -32,6 +32,7 @@ item_router = crud_router(
     ],
     filter_config=FilterConfig(
         is_deleted=lambda: False,
+        category=None,
     ),
     select_schema=Item,
 )

@@ -52,6 +52,9 @@ task_claim_router.include_router(
         ],
         filter_config=FilterConfig(
             is_deleted=lambda: False,
+            creator_id=None,
+            task_id=None,
+            status=None,
         ),
         select_schema=TaskClaim,
     )
