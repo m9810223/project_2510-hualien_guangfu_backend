@@ -18,7 +18,7 @@ task_claim_router = APIRouter()
     '/task_claim',
     tags=['TaskClaim'],
 )
-async def create_task(
+async def create_task_claim(
     data: CreateTaskClaimSchema, user: CurrentActiveUserDepends, session: SessionDepends
 ) -> TaskClaim:
     model = TaskClaim(**data.model_dump(), creator_id=user.id)
@@ -52,6 +52,9 @@ task_claim_router.include_router(
         ],
         filter_config=FilterConfig(
             is_deleted=lambda: False,
+            creator_id=None,
+            task_id=None,
+            status=None,
         ),
         select_schema=TaskClaim,
     )

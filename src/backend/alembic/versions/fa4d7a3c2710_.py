@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: d735321d2f5f
+Revision ID: fa4d7a3c2710
 Revises:
-Create Date: 2025-10-03 20:19:58.608615
+Create Date: 2025-10-03 20:51:57.720466
 
 """
 
@@ -15,7 +15,7 @@ import fastapi_users_db_sqlalchemy
 
 
 # revision identifiers, used by Alembic.
-revision: str = 'd735321d2f5f'
+revision: str = 'fa4d7a3c2710'
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None

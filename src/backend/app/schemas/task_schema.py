@@ -6,7 +6,6 @@ from ..enums.task_enum import TaskDangerLevel
 from ..enums.task_enum import TaskStatus
 from ..enums.task_enum import TaskType
 from ..enums.task_enum import TaskUrgency
-from ..models.task_model import Task
 
 
 class CreateTaskSchema(BaseModel):
@@ -27,7 +26,3 @@ class UpdateTaskSchema(BaseModel):
     maximum_number_of_people: int | None
     urgency: TaskUrgency | None
     danger_level: TaskDangerLevel | None
-
-
-class SelectTaskSchema(Task):
-    pass

@@ -8,7 +8,6 @@ from ..dependencies.user_dependency import CurrentActiveUserDepends
 from ..dependencies.user_dependency import current_active_user
 from ..models.task_model import Task
 from ..schemas.task_schema import CreateTaskSchema
-from ..schemas.task_schema import SelectTaskSchema
 from ..schemas.task_schema import UpdateTaskSchema
 
 
@@ -51,7 +50,12 @@ task_router.include_router(
         ],
         filter_config=FilterConfig(
             is_deleted=lambda: False,
+            creator_id=None,
+            type=None,
+            status=None,
+            urgency=None,
+            danger_level=None,
         ),
-        select_schema=SelectTaskSchema,
+        select_schema=Task,
     )
 )
