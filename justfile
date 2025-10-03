@@ -37,22 +37,36 @@ changelog output='docs/docs/changelog.md':
     docker run --rm -t -v $(pwd):/app/ orhunp/git-cliff:2.8.0 --repository . --output {{ output }}
 
 # 執行 pytest
-[group('app')]
 [group('test')]
 pytest-app *args:
     {{ DCO }} run --rm -i app pytest {{ args }}
 
 # 執行 pytest 與產生 coverage
-[group('app')]
 [group('coverage')]
 [group('test')]
 pytest-app-cov *args: (pytest-app "--cov --cov-report=html --cov-report=term" args)
 
 # 打開 coverage
-[group('app')]
 [group('coverage')]
 pytest-app-cov-open:
     python -m webbrowser -t file://$(pwd)/src/app/htmlcov/function_index.html
 
+uv-add:
+    {{ DCO }} run --rm backend uv add fastapi-cli fastapi 'uvicorn' fastcrud pydantic alembic asyncpg pydantic-settings  sqlmodel email-validator python-multipart jinja2 httpx pydantic-settings pydantic-extra-types psycopg2-binary 'fastapi-users[sqlalchemy]'
+
 initial_data:
-    {{ DCO }} run --rm backend uv run python initial_data.py 
+    {{ DCO }} run --rm backend uv run python initial_data.py
+
+[group('alembic')]
+alembic *args:
+    {{ DCO }} run --rm backend uv run alembic {{ args }}
+
+[group('alembic')]
+alembic-commit *args: (alembic "revision --autogenerate" args)
+
+[group('alembic')]
+alembic-migrate *args: (alembic "upgrade head")
+
+# 重置資料庫
+[group('alembic')]
+alembic-reset-db: (alembic "downgrade base") (alembic "upgrade head")

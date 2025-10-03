@@ -6,6 +6,6 @@ __pycache__/
 /volumes/
 
 /.env.bak
-/.env.prod-secrets*
+/.env.*-secrets*
 
 /docs/
