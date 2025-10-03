@@ -12,35 +12,36 @@ from sqlmodel import func
 class TaskType(SQLModel, table=True):
     __tablename__: t.ClassVar[str] = 'task_type'  # pyright: ignore[reportIncompatibleVariableOverride]
 
+    created_at: datetime = Field(sa_column=Column(DateTime(timezone=True), server_default=func.now()))
+    is_deleted: bool = False
+    deleted_at: datetime | None = Field(sa_column=Column(DateTime(timezone=True)))
+    updated_at: datetime = Field(sa_column=Column(DateTime(timezone=True)))
+
     id: int = Field(primary_key=True)
 
     name: str = Field(unique=True)  # 鏟土 / 搬運
-
-    # 建立時間（插入時自動設定）
-    created_at: datetime = Field(sa_column=Column(DateTime(timezone=True), server_default=func.now()))
-    # 更新時間（更新時自動更新）
-    updated_at: datetime = Field(
-        sa_column=Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
-    )
 
 
 class TaskStatus(SQLModel, table=True):
     __tablename__: t.ClassVar[str] = 'task_status'  # pyright: ignore[reportIncompatibleVariableOverride]
 
+    created_at: datetime = Field(sa_column=Column(DateTime(timezone=True), server_default=func.now()))
+    is_deleted: bool = False
+    deleted_at: datetime | None = Field(sa_column=Column(DateTime(timezone=True)))
+    updated_at: datetime = Field(sa_column=Column(DateTime(timezone=True)))
+
     id: int = Field(primary_key=True)
 
     name: str = Field(unique=True)
 
-    # 建立時間（插入時自動設定）
-    created_at: datetime = Field(sa_column=Column(DateTime(timezone=True), server_default=func.now()))
-    # 更新時間（更新時自動更新）
-    updated_at: datetime = Field(
-        sa_column=Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
-    )
-
 
 class Task(SQLModel, table=True):
     __tablename__: t.ClassVar[str] = 'task'  # pyright: ignore[reportIncompatibleVariableOverride]
+
+    created_at: datetime = Field(sa_column=Column(DateTime(timezone=True), server_default=func.now()))
+    is_deleted: bool = False
+    deleted_at: datetime | None = Field(sa_column=Column(DateTime(timezone=True)))
+    updated_at: datetime = Field(sa_column=Column(DateTime(timezone=True)))
 
     id: int = Field(primary_key=True)
 
@@ -72,13 +73,6 @@ class Task(SQLModel, table=True):
     #     task_claims: list['TaskClaim'] = Relationship(back_populates='task')
     #     need_assignments: list['NeedAssignment'] = Relationship(back_populates='task')
     #     supply_reservations: list['SupplyReservation'] = Relationship(back_populates='task')
-
-    # 建立時間（插入時自動設定）
-    created_at: datetime = Field(sa_column=Column(DateTime(timezone=True), server_default=func.now()))
-    # 更新時間（更新時自動更新）
-    updated_at: datetime = Field(
-        sa_column=Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
-    )
 
 
 # class TaskClaim(SQLModel, table=True):

@@ -58,8 +58,15 @@ uv-add:
 alembic *args:
     {{ DCO }} run --rm backend uv run alembic {{ args }}
 
+delete-and-restart-db: && alembic-migrate
+    {{ DCO }} down -v db
+    {{ DCO }} up -d db --wait
+
 [group('alembic')]
 alembic-commit *args: (alembic "revision --autogenerate" args)
+
+[group('alembic')]
+alembic-commit-migrate *args: (alembic "revision --autogenerate" args) alembic-migrate
 
 [group('alembic')]
 alembic-migrate *args: (alembic "upgrade head")

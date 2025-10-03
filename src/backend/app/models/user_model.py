@@ -1,4 +1,5 @@
 from fastapi_users.db import SQLAlchemyBaseUserTableUUID
+from sqlalchemy import Boolean
 from sqlalchemy import Column
 from sqlalchemy import DateTime
 from sqlalchemy import String
@@ -12,10 +13,10 @@ class Base(DeclarativeBase):
 
 
 class User(SQLAlchemyBaseUserTableUUID, Base):
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    is_deleted = Column(Boolean(create_constraint=False))
+    deleted_at = Column(DateTime(timezone=True))
+    updated_at = Column(DateTime(timezone=True))
+
     name = Column(String, nullable=True)
     phone = Column(String, nullable=True)
-
-    # 建立時間（插入時自動設定）
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
-    # 更新時間（更新時自動更新）
-    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
