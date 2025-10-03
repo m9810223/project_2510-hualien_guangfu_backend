@@ -76,6 +76,7 @@ lint.extend-ignore = [
   "COM812",
   "ISC001",
   "RET504", # Unnecessary assignment before return statement
+  "RUF003",
   "S101",   # Use of `assert` detected
   "TID252",
 ]
