@@ -54,9 +54,6 @@ pytest-app-cov-open:
 uv-add:
     {{ DCO }} run --rm backend uv add fastapi-cli fastapi 'uvicorn' fastcrud pydantic alembic asyncpg pydantic-settings  sqlmodel email-validator python-multipart jinja2 httpx pydantic-settings pydantic-extra-types psycopg2-binary 'fastapi-users[sqlalchemy]'
 
-initial_data:
-    {{ DCO }} run --rm backend uv run python initial_data.py
-
 [group('alembic')]
 alembic *args:
     {{ DCO }} run --rm backend uv run alembic {{ args }}
