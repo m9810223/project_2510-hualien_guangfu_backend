@@ -1,4 +1,5 @@
 from fastapi_users.db import SQLAlchemyBaseUserTableUUID
+from fastapi_users_db_sqlalchemy import UUID_ID
 from sqlalchemy import Boolean
 from sqlalchemy import Column
 from sqlalchemy import DateTime
@@ -10,6 +11,9 @@ from sqlmodel import SQLModel
 
 class Base(DeclarativeBase):
     metadata = SQLModel.metadata
+
+
+UserId = UUID_ID
 
 
 class User(SQLAlchemyBaseUserTableUUID, Base):

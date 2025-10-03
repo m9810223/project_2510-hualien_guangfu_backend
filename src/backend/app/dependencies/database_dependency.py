@@ -7,11 +7,11 @@ from sqlalchemy.ext.asyncio import async_sessionmaker
 from sqlalchemy.ext.asyncio import create_async_engine
 from sqlmodel import SQLModel
 
-from . import models
-from .settings.database_setting import database_settings
+from ..models.user_model import User
+from ..settings.database_setting import database_settings
 
 
-_async_engine = create_async_engine(database_settings.database_url, echo=True)
+_async_engine = create_async_engine(database_settings.database_url, echo=database_settings.echo)
 _async_session_maker = async_sessionmaker(_async_engine, expire_on_commit=False)
 
 
@@ -25,5 +25,8 @@ async def create_db_and_tables() -> None:
         await conn.run_sync(SQLModel.metadata.create_all)
 
 
-async def get_user_db(session: t.Annotated[AsyncSession, Depends(get_async_session)]):
-    yield SQLAlchemyUserDatabase(session, models.User)
+SessionDepends = t.Annotated[AsyncSession, Depends(get_async_session)]
+
+
+async def get_user_db(session: SessionDepends):
+    yield SQLAlchemyUserDatabase(session, User)

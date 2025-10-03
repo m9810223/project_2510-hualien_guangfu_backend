@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 54d8a87ff965
+Revision ID: c0fe181ce3c8
 Revises: 
-Create Date: 2025-10-03 13:04:51.768700
+Create Date: 2025-10-03 17:03:12.642159
 
 """
 
@@ -15,7 +15,7 @@ import fastapi_users_db_sqlalchemy
 
 
 # revision identifiers, used by Alembic.
-revision: str = '54d8a87ff965'
+revision: str = 'c0fe181ce3c8'
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -35,26 +35,6 @@ def upgrade() -> None:
     sa.Column('category', sqlmodel.sql.sqltypes.AutoString(), nullable=False),
     sa.Column('price', sa.Integer(), nullable=False),
     sa.PrimaryKeyConstraint('id')
-    )
-    op.create_table('task_status',
-    sa.Column('created_at', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=True),
-    sa.Column('is_deleted', sa.Boolean(), nullable=False),
-    sa.Column('deleted_at', sa.DateTime(timezone=True), nullable=True),
-    sa.Column('updated_at', sa.DateTime(timezone=True), nullable=True),
-    sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('name', sqlmodel.sql.sqltypes.AutoString(), nullable=False),
-    sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('name')
-    )
-    op.create_table('task_type',
-    sa.Column('created_at', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=True),
-    sa.Column('is_deleted', sa.Boolean(), nullable=False),
-    sa.Column('deleted_at', sa.DateTime(timezone=True), nullable=True),
-    sa.Column('updated_at', sa.DateTime(timezone=True), nullable=True),
-    sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('name', sqlmodel.sql.sqltypes.AutoString(), nullable=False),
-    sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('name')
     )
     op.create_table('user',
     sa.Column('created_at', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=True),
@@ -78,28 +58,50 @@ def upgrade() -> None:
     sa.Column('deleted_at', sa.DateTime(timezone=True), nullable=True),
     sa.Column('updated_at', sa.DateTime(timezone=True), nullable=True),
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('task_type_id', sa.Integer(), nullable=False),
-    sa.Column('task_status_id', sa.Integer(), nullable=False),
-    sa.Column('creator', sa.Uuid(), nullable=False),
+    sa.Column('creator_id', sa.Uuid(), nullable=False),
+    sa.Column('type', sa.Enum('excavation', 'transportation', name='tasktype'), nullable=True),
     sa.Column('title', sqlmodel.sql.sqltypes.AutoString(), nullable=False),
-    sa.Column('description', sqlmodel.sql.sqltypes.AutoString(), nullable=False),
-    sa.ForeignKeyConstraint(['creator'], ['user.id'], ),
-    sa.ForeignKeyConstraint(['task_status_id'], ['task_status.id'], ),
-    sa.ForeignKeyConstraint(['task_type_id'], ['task_type.id'], ),
+    sa.Column('description', sqlmodel.sql.sqltypes.AutoString(), nullable=True),
+    sa.Column('status', sa.Enum('preparing', 'working', 'done', name='taskstatus'), nullable=True),
+    sa.Column('starttime', sa.DateTime(timezone=True), nullable=True),
+    sa.Column('deadline', sa.DateTime(timezone=True), nullable=True),
+    sa.Column('contact_number', sqlmodel.sql.sqltypes.AutoString(), nullable=True),
+    sa.Column('registration_location', sqlmodel.sql.sqltypes.AutoString(), nullable=True),
+    sa.Column('work_location', sqlmodel.sql.sqltypes.AutoString(), nullable=True),
+    sa.Column('required_number_of_people', sa.Integer(), nullable=True),
+    sa.Column('maximum_number_of_people', sa.Integer(), nullable=True),
+    sa.Column('urgency', sa.Enum('low', 'medium', 'high', name='taskurgency'), nullable=True),
+    sa.Column('danger_level', sa.Enum('normal', 'medium', 'dangerous', name='taskdangerlevel'), nullable=True),
+    sa.ForeignKeyConstraint(['creator_id'], ['user.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
-    op.create_index(op.f('ix_task_creator'), 'task', ['creator'], unique=False)
+    op.create_index(op.f('ix_task_creator_id'), 'task', ['creator_id'], unique=False)
+    op.create_table('task_claim',
+    sa.Column('created_at', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=True),
+    sa.Column('is_deleted', sa.Boolean(), nullable=False),
+    sa.Column('deleted_at', sa.DateTime(timezone=True), nullable=True),
+    sa.Column('updated_at', sa.DateTime(timezone=True), nullable=True),
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('task_id', sa.Integer(), nullable=False),
+    sa.Column('user_id', sa.Uuid(), nullable=False),
+    sa.Column('start_at', sa.DateTime(timezone=True), nullable=True),
+    sa.Column('complete_at', sa.DateTime(timezone=True), nullable=True),
+    sa.Column('notes', sqlmodel.sql.sqltypes.AutoString(), nullable=True),
+    sa.Column('status', sa.Enum('claimed', 'started', 'completed', 'cancelled', name='taskclaimstatus'), nullable=False),
+    sa.ForeignKeyConstraint(['task_id'], ['task.id'], ),
+    sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
+    sa.PrimaryKeyConstraint('id')
+    )
     # ### end Alembic commands ###
 
 
 def downgrade() -> None:
     """Downgrade schema."""
     # ### commands auto generated by Alembic - please adjust! ###
-    op.drop_index(op.f('ix_task_creator'), table_name='task')
+    op.drop_table('task_claim')
+    op.drop_index(op.f('ix_task_creator_id'), table_name='task')
     op.drop_table('task')
     op.drop_index(op.f('ix_user_email'), table_name='user')
     op.drop_table('user')
-    op.drop_table('task_type')
-    op.drop_table('task_status')
     op.drop_table('item')
     # ### end Alembic commands ###

@@ -1,3 +1,5 @@
+import typing as t
+
 from pydantic import Field
 from pydantic import PostgresDsn
 from pydantic_settings import BaseSettings
@@ -6,6 +8,9 @@ from sqlalchemy import make_url
 
 
 class Settings(BaseSettings):
+    echo: t.ClassVar[bool] = False
+    expire_on_commit: t.ClassVar[bool] = True
+
     postgres_dsn: PostgresDsn = Field(default=..., validation_alias='POSTGRES_DSN')
 
     @property

@@ -14,7 +14,7 @@ class Item(SQLModel, table=True):
     created_at: datetime = Field(sa_column=Column(DateTime(timezone=True), server_default=func.now()))
     is_deleted: bool = False
     deleted_at: datetime | None = Field(sa_column=Column(DateTime(timezone=True)))
-    updated_at: datetime = Field(sa_column=Column(DateTime(timezone=True)))
+    updated_at: datetime | None = Field(sa_column=Column(DateTime(timezone=True)))
 
     id: int = Field(primary_key=True, nullable=False)
 
