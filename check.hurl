@@ -114,3 +114,11 @@ authorization: Bearer {{access_token}}
   "danger_level": 10
 }
 HTTP 200
+
+
+DELETE {{backend_host}}/task/{{task_id}}
+HTTP 401
+
+DELETE {{backend_host}}/task/{{task_id}}
+authorization: Bearer {{access_token}}
+HTTP 200

@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: c0fe181ce3c8
+Revision ID: cd02d04a3f70
 Revises: 
-Create Date: 2025-10-03 17:03:12.642159
+Create Date: 2025-10-03 17:52:04.832586
 
 """
 
@@ -15,7 +15,7 @@ import fastapi_users_db_sqlalchemy
 
 
 # revision identifiers, used by Alembic.
-revision: str = 'c0fe181ce3c8'
+revision: str = 'cd02d04a3f70'
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
