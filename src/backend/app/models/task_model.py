@@ -14,7 +14,7 @@ class TaskType(SQLModel, table=True):
 
     id: int = Field(primary_key=True)
 
-    name: str = Field(unique=True)
+    name: str = Field(unique=True)  # 鏟土 / 搬運
 
     # 建立時間（插入時自動設定）
     created_at: datetime = Field(sa_column=Column(DateTime(timezone=True), server_default=func.now()))

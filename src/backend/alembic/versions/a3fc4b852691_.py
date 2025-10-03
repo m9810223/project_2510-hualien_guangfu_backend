@@ -1,8 +1,8 @@
-"""dev
+"""empty message
 
-Revision ID: 2ea09231b315
-Revises: 785d82d3818a
-Create Date: 2025-10-03 11:43:58.438779
+Revision ID: a3fc4b852691
+Revises: 
+Create Date: 2025-10-03 12:24:16.795228
 
 """
 
@@ -15,8 +15,8 @@ import fastapi_users_db_sqlalchemy
 
 
 # revision identifiers, used by Alembic.
-revision: str = '2ea09231b315'
-down_revision: Union[str, Sequence[str], None] = '785d82d3818a'
+revision: str = 'a3fc4b852691'
+down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
@@ -49,6 +49,10 @@ def upgrade() -> None:
     sa.UniqueConstraint('name')
     )
     op.create_table('user',
+    sa.Column('name', sa.String(), nullable=True),
+    sa.Column('phone', sa.String(), nullable=True),
+    sa.Column('created_at', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=True),
+    sa.Column('updated_at', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=True),
     sa.Column('id', fastapi_users_db_sqlalchemy.generics.GUID(), nullable=False),
     sa.Column('email', sa.String(length=320), nullable=False),
     sa.Column('hashed_password', sa.String(length=1024), nullable=False),
