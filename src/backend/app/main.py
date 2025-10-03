@@ -4,6 +4,7 @@ from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 
 from .routers.item_router import item_router
+from .routers.task_claim_router import task_claim_router
 from .routers.task_router import task_router
 from .routers.user_router import user_router
 from .settings.app_setting import app_settings
@@ -32,8 +33,7 @@ if app_settings.all_cors_origins:
     )
 
 
-app.include_router(user_router)
-
+app.include_router(task_claim_router)
 app.include_router(task_router)
-
 app.include_router(item_router)  # TODO
+app.include_router(user_router)

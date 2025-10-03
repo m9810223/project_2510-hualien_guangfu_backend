@@ -1,6 +1,6 @@
-from datetime import datetime
-
 from pydantic import BaseModel
+
+from ..models.item_model import Item
 
 
 class CreateItemSchema(BaseModel):
@@ -15,3 +15,7 @@ class UpdateItemSchema(BaseModel):
     description: str | None = None
     category: str | None = None
     price: float | None = None
+
+
+class SelectItemSchema(Item):
+    pass

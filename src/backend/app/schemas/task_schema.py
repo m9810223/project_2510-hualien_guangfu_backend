@@ -6,6 +6,7 @@ from ..enums.task_enum import TaskDangerLevel
 from ..enums.task_enum import TaskStatus
 from ..enums.task_enum import TaskType
 from ..enums.task_enum import TaskUrgency
+from ..models.task_model import Task
 
 
 class CreateTaskSchema(BaseModel):
@@ -17,7 +18,7 @@ class UpdateTaskSchema(BaseModel):
     title: str
     description: str | None
     status: TaskStatus | None
-    starttime: datetime | None
+    start_at: datetime | None
     deadline: datetime | None
     contact_number: str | None
     registration_location: str | None
@@ -26,3 +27,7 @@ class UpdateTaskSchema(BaseModel):
     maximum_number_of_people: int | None
     urgency: TaskUrgency | None
     danger_level: TaskDangerLevel | None
+
+
+class SelectTaskSchema(Task):
+    pass

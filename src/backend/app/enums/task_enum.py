@@ -28,11 +28,3 @@ class TaskDangerLevel(IntEnum):
     normal = 10
     medium = 20
     dangerous = 30
-
-
-@unique
-class TaskClaimStatus(StrEnum):
-    claimed = 'claimed'
-    started = 'started'
-    completed = 'completed'
-    cancelled = 'cancelled'
