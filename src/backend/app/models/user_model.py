@@ -17,8 +17,8 @@ UserId = UUID_ID
 
 
 class User(SQLAlchemyBaseUserTableUUID, Base):
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
-    is_deleted = Column(Boolean(create_constraint=False))
+    created_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now())
+    is_deleted = Column(Boolean(), default=False, nullable=False)
     deleted_at = Column(DateTime(timezone=True))
     updated_at = Column(DateTime(timezone=True))
 

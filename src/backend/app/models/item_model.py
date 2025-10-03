@@ -11,8 +11,8 @@ from sqlmodel import func
 class Item(SQLModel, table=True):
     __tablename__: t.ClassVar[str] = 'item'  # pyright: ignore[reportIncompatibleVariableOverride]
 
-    created_at: datetime = Field(sa_column=Column(DateTime(timezone=True), server_default=func.now()))
-    is_deleted: bool = False
+    created_at: datetime = Field(sa_column=Column(DateTime(timezone=True), nullable=False, server_default=func.now()))
+    is_deleted: bool = Field(default=False)
     deleted_at: datetime | None = Field(sa_column=Column(DateTime(timezone=True)))
     updated_at: datetime | None = Field(sa_column=Column(DateTime(timezone=True)))
 

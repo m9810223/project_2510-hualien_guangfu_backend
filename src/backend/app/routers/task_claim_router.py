@@ -6,35 +6,36 @@ from ..dependencies.database_dependency import SessionDepends
 from ..dependencies.database_dependency import get_async_session
 from ..dependencies.user_dependency import CurrentActiveUserDepends
 from ..dependencies.user_dependency import current_active_user
-from ..models.task_model import Task
-from ..schemas.task_schema import CreateTaskSchema
-from ..schemas.task_schema import SelectTaskSchema
-from ..schemas.task_schema import UpdateTaskSchema
+from ..models.task_claim_model import TaskClaim
+from ..schemas.task_claim_schema import CreateTaskClaimSchema
+from ..schemas.task_claim_schema import UpdateTaskClaimSchema
 
 
-task_router = APIRouter()
+task_claim_router = APIRouter()
 
 
-@task_router.post(
-    '/task',
-    tags=['Task'],
+@task_claim_router.post(
+    '/task_claim',
+    tags=['TaskClaim'],
 )
-async def create_task(data: CreateTaskSchema, user: CurrentActiveUserDepends, session: SessionDepends) -> Task:
-    model = Task(**data.model_dump(), creator_id=user.id)
+async def create_task(
+    data: CreateTaskClaimSchema, user: CurrentActiveUserDepends, session: SessionDepends
+) -> TaskClaim:
+    model = TaskClaim(**data.model_dump(), creator_id=user.id)
     session.add(model)
     await session.commit()
     await session.refresh(model)
     return model
 
 
-task_router.include_router(
+task_claim_router.include_router(
     crud_router(
         session=get_async_session,
-        model=Task,
-        create_schema=CreateTaskSchema,
-        update_schema=UpdateTaskSchema,
-        path='/task',
-        tags=['Task'],
+        model=TaskClaim,
+        create_schema=CreateTaskClaimSchema,
+        update_schema=UpdateTaskClaimSchema,
+        path='/task_claim',
+        tags=['TaskClaim'],
         create_deps=[],
         read_deps=[],
         read_multi_deps=[],
@@ -52,6 +53,6 @@ task_router.include_router(
         filter_config=FilterConfig(
             is_deleted=lambda: False,
         ),
-        select_schema=SelectTaskSchema,
+        select_schema=TaskClaim,
     )
 )
