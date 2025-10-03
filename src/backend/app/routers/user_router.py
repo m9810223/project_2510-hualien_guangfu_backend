@@ -5,7 +5,6 @@ from fastapi import APIRouter
 from fastapi import Depends
 from fastapi import FastAPI
 
-from ..database import create_db_and_tables
 from ..models.user_model import User
 from ..schemas.user_schema import UserCreate
 from ..schemas.user_schema import UserRead
