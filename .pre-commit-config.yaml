@@ -27,6 +27,7 @@ repos:
       - id: ruff
         args:
           - --fix
+        exclude: src/backend/alembic/versions
       - id: ruff-format
 
   - repo: https://github.com/pre-commit/pygrep-hooks
