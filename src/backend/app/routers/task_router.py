@@ -1,81 +1,55 @@
 from fastapi import APIRouter
+from fastcrud import FilterConfig
 from fastcrud import crud_router
 
-from ..database import get_async_session
-from ..models.task_model import TaskStatus
-from ..models.task_model import TaskType
-from ..schemas.task_schema import TaskStatusSchema
-from ..schemas.task_schema import TaskTypeSchema
+from ..dependencies.database_dependency import SessionDepends
+from ..dependencies.database_dependency import get_async_session
+from ..dependencies.user_dependency import CurrentActiveUserDepends
+from ..dependencies.user_dependency import current_active_user
+from ..models.task_model import Task
+from ..schemas.task_schema import CreateTaskSchema, UpdateTaskSchema
 
 
 task_router = APIRouter()
 
 
-task_router.include_router(
-    crud_router(
-        session=get_async_session,
-        model=TaskType,
-        create_schema=TaskTypeSchema,
-        update_schema=TaskTypeSchema,
-        path='/task_type',
-        tags=['TaskType'],
-        included_methods=[
-            'create',
-            'read',
-            'read_multi',
-            # 'update',
-            # 'delete',
-            # "db_delete",
-        ],
-        # deleted_methods=[
-        #     "create",
-        #     "read",
-        #     "read_multi",
-        #     "update",
-        #     "delete",
-        #     "db_delete",
-        # ],
-        # endpoint_names={
-        #     # "create": "add",
-        #     # "read": "fetch",
-        #     # "read_multi": "list",
-        #     # "update": "modify",
-        #     # "delete": "remove",
-        # },
-    )
+@task_router.post(
+    '/task',
+    tags=['Task'],
 )
+async def create_task(task_data: CreateTaskSchema, user: CurrentActiveUserDepends, session: SessionDepends) -> Task:
+    task = Task(**task_data.model_dump(), creator_id=user.id)
+    session.add(task)
+    await session.commit()
+    await session.refresh(task)
+    return task
 
 
 task_router.include_router(
     crud_router(
         session=get_async_session,
-        model=TaskStatus,
-        create_schema=TaskStatusSchema,
-        update_schema=TaskStatusSchema,
-        path='/task_status',
-        tags=['TaskStatus'],
+        model=Task,
+        create_schema=CreateTaskSchema,
+        update_schema=UpdateTaskSchema,
+        path='/task',
+        tags=['Task'],
+        create_deps=[],
+        read_deps=[],
+        read_multi_deps=[],
+        update_deps=[current_active_user],
+        delete_deps=[current_active_user],
+        db_delete_deps=[current_active_user],
         included_methods=[
-            'create',
+            # 'create',
             'read',
             'read_multi',
-            # 'update',
-            # 'delete',
-            # "db_delete",
+            'update',
+            'delete',
+            'db_delete',
         ],
-        # deleted_methods=[
-        #     "create",
-        #     "read",
-        #     "read_multi",
-        #     "update",
-        #     "delete",
-        #     "db_delete",
-        # ],
-        # endpoint_names={
-        #     # "create": "add",
-        #     # "read": "fetch",
-        #     # "read_multi": "list",
-        #     # "update": "modify",
-        #     # "delete": "remove",
-        # },
+        filter_config=FilterConfig(
+            is_deleted=lambda: False,
+        ),
+        select_schema=Task,
     )
 )

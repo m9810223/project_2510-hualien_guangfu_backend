@@ -1,30 +1,23 @@
-from contextlib import asynccontextmanager
-import typing as t
-
 from fastapi import APIRouter
-from fastapi import Depends
-from fastapi import FastAPI
 
-from ..models.user_model import User
+from ..dependencies.user_dependency import CurrentActiveUserDepends
+from ..dependencies.user_dependency import auth_backend
+from ..dependencies.user_dependency import fastapi_users
 from ..schemas.user_schema import UserCreate
 from ..schemas.user_schema import UserRead
 from ..schemas.user_schema import UserUpdate
-from ..users import auth_backend
-from ..users import current_active_user
-from ..users import fastapi_users
 
 
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    # Not needed if you setup a migration system like Alembic
-    # await create_db_and_tables()
-    yield
+user_router = APIRouter()
 
 
-user_router = APIRouter(lifespan=lifespan)
+@user_router.get('/authenticated-route', tags=['auth'])
+async def authenticated_route(user: CurrentActiveUserDepends):
+    return {'message': f'Hello {user.email}!'}
+
 
 user_router.include_router(
-    fastapi_users.get_auth_router(auth_backend),
+    fastapi_users.get_auth_router(auth_backend),  # pyright: ignore[reportArgumentType]
     prefix='/auth/jwt',
     tags=['auth'],
 )
@@ -48,8 +41,3 @@ user_router.include_router(
     prefix='/users',
     tags=['users'],
 )
-
-
-@user_router.get('/authenticated-route', tags=['auth'])
-async def authenticated_route(user: t.Annotated[User, Depends(current_active_user)]):
-    return {'message': f'Hello {user.email}!'}
