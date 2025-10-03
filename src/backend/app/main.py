@@ -1,16 +1,12 @@
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
-from fastapi.routing import APIRoute
 from starlette.middleware.cors import CORSMiddleware
 
 from .routers.item_router import item_router
+from .routers.task_router import task_router
 from .routers.user_router import user_router
 from .settings.app_setting import app_settings
-
-
-def _custom_generate_unique_id(route: APIRoute) -> str:
-    return f'{route.tags[0]}-{route.name}'
 
 
 @asynccontextmanager
@@ -22,7 +18,6 @@ app = FastAPI(
     lifespan=_lifespan,
     title=app_settings.PROJECT_NAME,
     openapi_url=f'{app_settings.API_V1_STR}/openapi.json',
-    generate_unique_id_function=_custom_generate_unique_id,
 )
 
 
@@ -38,5 +33,7 @@ if app_settings.all_cors_origins:
 
 
 app.include_router(user_router)
+
+app.include_router(task_router)
 
 app.include_router(item_router)  # TODO

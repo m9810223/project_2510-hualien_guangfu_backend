@@ -1,66 +1,78 @@
+from datetime import datetime
 import typing as t
 
-from sqlalchemy import Text
+from fastapi_users_db_sqlalchemy import UUID_ID
 from sqlmodel import Column
+from sqlmodel import DateTime
 from sqlmodel import Field
-from sqlmodel import Relationship
 from sqlmodel import SQLModel
+from sqlmodel import func
 
 
 class TaskType(SQLModel, table=True):
-    __tablename__: t.ClassVar[str] = 'task_types'  # pyright: ignore[reportIncompatibleVariableOverride]
+    __tablename__: t.ClassVar[str] = 'task_type'  # pyright: ignore[reportIncompatibleVariableOverride]
 
-    type: str = Field(max_length=50, primary_key=True)
-    display_name: str = Field(max_length=100)
-    description: str | None = Field(default=None, sa_column=Column(Text))
-    icon: str | None = Field(default=None, max_length=100)
+    created_at: datetime = Field(sa_column=Column(DateTime(timezone=True), server_default=func.now()))
+    is_deleted: bool = False
+    deleted_at: datetime | None = Field(sa_column=Column(DateTime(timezone=True)))
+    updated_at: datetime = Field(sa_column=Column(DateTime(timezone=True)))
 
-    # 關聯
-    tasks: list['Task'] = Relationship(back_populates='task_type_obj')
+    id: int = Field(primary_key=True)
+
+    name: str = Field(unique=True)  # 鏟土 / 搬運
 
 
 class TaskStatus(SQLModel, table=True):
-    __tablename__: t.ClassVar[str] = 'task_statuses'  # pyright: ignore[reportIncompatibleVariableOverride]
+    __tablename__: t.ClassVar[str] = 'task_status'  # pyright: ignore[reportIncompatibleVariableOverride]
 
-    status: str = Field(max_length=50, primary_key=True)
-    display_name: str = Field(max_length=100)
-    description: str | None = Field(default=None, sa_column=Column(Text))
+    created_at: datetime = Field(sa_column=Column(DateTime(timezone=True), server_default=func.now()))
+    is_deleted: bool = False
+    deleted_at: datetime | None = Field(sa_column=Column(DateTime(timezone=True)))
+    updated_at: datetime = Field(sa_column=Column(DateTime(timezone=True)))
 
-    # 關聯
-    tasks: list['Task'] = Relationship(back_populates='task_status_obj')
+    id: int = Field(primary_key=True)
+
+    name: str = Field(unique=True)
 
 
-# class Task(SQLModel, table=True):
-#     __tablename__: t.ClassVar[str] = 'tasks'  # pyright: ignore[reportIncompatibleVariableOverride]
+class Task(SQLModel, table=True):
+    __tablename__: t.ClassVar[str] = 'task'  # pyright: ignore[reportIncompatibleVariableOverride]
 
-#     id: int = Field(primary_key=True)
+    created_at: datetime = Field(sa_column=Column(DateTime(timezone=True), server_default=func.now()))
+    is_deleted: bool = False
+    deleted_at: datetime | None = Field(sa_column=Column(DateTime(timezone=True)))
+    updated_at: datetime = Field(sa_column=Column(DateTime(timezone=True)))
 
-#     creator_id: int = Field(foreign_key='users.id', index=True)
-#     title: str = Field(max_length=200)
-#     description: str = Field(sa_column=Column(Text))
-#     task_type: str = Field(foreign_key='task_types.type', max_length=50)
-#     status: str = Field(default='available', foreign_key='task_statuses.status', max_length=50, index=True)
-#     location_data: dict = Field(sa_column=Column(JSON))  # {address, coordinates, details}
-#     required_volunteers: int = Field(default=1)
-#     required_skills: dict | None = Field(default=None, sa_column=Column(JSON))  # 所需技能或資格
-#     deadline: datetime | None = Field(default=None)
-#     priority_level: int = Field(default=1)  # 1-5, 5為最高優先級
-#     approval_status: str = Field(default='approved', max_length=20)  # 'pending', 'approved', 'rejected'
-#     approved_by: int | None = Field(default=None, foreign_key='users.id')
-#     approved_at: datetime | None = Field(default=None)
+    id: int = Field(primary_key=True)
 
-#     # 關聯
-#     creator: 'User' = Relationship(
-#         sa_relationship_kwargs={'foreign_keys': '[Task.creator_id]'},
-#     )
-#     approver: 'User | None' = Relationship(
-#         sa_relationship_kwargs={'foreign_keys': '[Task.approved_by]'},
-#     )
-#     task_type_obj: TaskType = Relationship(back_populates='tasks')
-#     task_status_obj: TaskStatus = Relationship(back_populates='tasks')
-#     task_claims: list['TaskClaim'] = Relationship(back_populates='task')
-#     need_assignments: list['NeedAssignment'] = Relationship(back_populates='task')
-#     supply_reservations: list['SupplyReservation'] = Relationship(back_populates='task')
+    task_type_id: int = Field(foreign_key='task_type.id')
+    task_status_id: int = Field(foreign_key='task_status.id')
+    creator: UUID_ID = Field(foreign_key='user.id', index=True)
+    title: str
+    description: str
+
+    #     deadline: datetime | None = Field(default=None)
+
+    #     location_data: dict = Field(sa_column=Column(JSON))  # {address, coordinates, details}
+    #     required_volunteers: int = Field(default=1)
+    #     required_skills: dict | None = Field(default=None, sa_column=Column(JSON))  # 所需技能或資格
+    #     priority_level: int = Field(default=1)  # 1-5, 5為最高優先級
+    #     approval_status: str = Field(default='approved', max_length=20)  # 'pending', 'approved', 'rejected'
+    #     approved_by: int | None = Field(default=None, foreign_key='users.id')
+    #     approved_at: datetime | None = Field(default=None)
+
+    #     # 關聯
+    #     creator: 'User' = Relationship(
+    #         sa_relationship_kwargs={'foreign_keys': '[Task.creator_id]'},
+    #     )
+    #     approver: 'User | None' = Relationship(
+    #         sa_relationship_kwargs={'foreign_keys': '[Task.approved_by]'},
+    #     )
+    #     task_type_obj: TaskType = Relationship(back_populates='tasks')
+    #     task_status_obj: TaskStatus = Relationship(back_populates='tasks')
+    #     task_claims: list['TaskClaim'] = Relationship(back_populates='task')
+    #     need_assignments: list['NeedAssignment'] = Relationship(back_populates='task')
+    #     supply_reservations: list['SupplyReservation'] = Relationship(back_populates='task')
 
 
 # class TaskClaim(SQLModel, table=True):

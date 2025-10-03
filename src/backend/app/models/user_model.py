@@ -1,4 +1,9 @@
 from fastapi_users.db import SQLAlchemyBaseUserTableUUID
+from sqlalchemy import Boolean
+from sqlalchemy import Column
+from sqlalchemy import DateTime
+from sqlalchemy import String
+from sqlalchemy import func
 from sqlalchemy.orm import DeclarativeBase
 from sqlmodel import SQLModel
 
@@ -8,4 +13,10 @@ class Base(DeclarativeBase):
 
 
 class User(SQLAlchemyBaseUserTableUUID, Base):
-    pass
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    is_deleted = Column(Boolean(create_constraint=False))
+    deleted_at = Column(DateTime(timezone=True))
+    updated_at = Column(DateTime(timezone=True))
+
+    name = Column(String, nullable=True)
+    phone = Column(String, nullable=True)
