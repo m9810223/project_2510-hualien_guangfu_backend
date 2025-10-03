@@ -5,7 +5,8 @@ from sqlmodel import SQLModel
 
 
 class Item(SQLModel, table=True):
-    __tablename__: t.ClassVar[str] = 'items'  # pyright: ignore[reportIncompatibleVariableOverride]
+    __tablename__: t.ClassVar[str] = 'item'  # pyright: ignore[reportIncompatibleVariableOverride]
+
     id: int = Field(primary_key=True, nullable=False)
 
     name: str
