@@ -30,7 +30,6 @@ item_router = crud_router(
         'delete',
         'db_delete',
     ],
-    endpoint_names={},
     filter_config=FilterConfig(
         is_deleted=lambda: False,  # filters={'is_deleted': False},
     ),

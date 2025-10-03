@@ -7,7 +7,8 @@ from ..dependencies.database_dependency import get_async_session
 from ..dependencies.user_dependency import CurrentActiveUserDepends
 from ..dependencies.user_dependency import current_active_user
 from ..models.task_model import Task
-from ..schemas.task_schema import CreateTaskSchema, UpdateTaskSchema
+from ..schemas.task_schema import CreateTaskSchema
+from ..schemas.task_schema import UpdateTaskSchema
 
 
 task_router = APIRouter()
