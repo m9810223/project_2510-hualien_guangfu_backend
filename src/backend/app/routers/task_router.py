@@ -7,7 +7,7 @@ from ..dependencies.database_dependency import get_async_session
 from ..dependencies.user_dependency import CurrentActiveUserDepends
 from ..dependencies.user_dependency import current_active_user
 from ..models.task_model import Task
-from ..schemas.task_schema import CreateTaskSchema
+from ..schemas.task_schema import CreateTaskSchema, UpdateTaskSchema
 
 
 task_router = APIRouter()
@@ -30,12 +30,12 @@ task_router.include_router(
         session=get_async_session,
         model=Task,
         create_schema=CreateTaskSchema,
-        update_schema=CreateTaskSchema,
+        update_schema=UpdateTaskSchema,
         path='/task',
         tags=['Task'],
         create_deps=[],
-        # read_deps=[],
-        # read_multi_deps=[],
+        read_deps=[],
+        read_multi_deps=[],
         update_deps=[current_active_user],
         delete_deps=[current_active_user],
         db_delete_deps=[current_active_user],
@@ -50,6 +50,6 @@ task_router.include_router(
         filter_config=FilterConfig(
             is_deleted=lambda: False,
         ),
-        # select_schema=CreateTaskSchema,
+        select_schema=Task,
     )
 )

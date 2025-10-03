@@ -6,7 +6,6 @@ from ..dependencies.item_dependency import hello_dep
 from ..dependencies.user_dependency import current_active_user
 from ..models.item_model import Item
 from ..schemas.item_schema import CreateItemSchema
-from ..schemas.item_schema import SelectItemSchema
 from ..schemas.item_schema import UpdateItemSchema
 
 
@@ -34,5 +33,5 @@ item_router = crud_router(
     filter_config=FilterConfig(
         is_deleted=lambda: False,
     ),
-    select_schema=SelectItemSchema,
+    select_schema=Item,
 )
