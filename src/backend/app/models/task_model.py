@@ -19,8 +19,7 @@ class Task(SQLModel, table=True):
     __tablename__: t.ClassVar[str] = 'task'  # pyright: ignore[reportIncompatibleVariableOverride]
 
     created_at: datetime = Field(sa_column=Column(DateTime(timezone=True), server_default=func.now()))
-    is_deleted: bool = Field(default=False)
-    # is_deleted: bool = False
+    is_deleted: bool = False
     deleted_at: datetime | None = Field(sa_column=Column(DateTime(timezone=True)))
     updated_at: datetime | None = Field(sa_column=Column(DateTime(timezone=True)))
 
