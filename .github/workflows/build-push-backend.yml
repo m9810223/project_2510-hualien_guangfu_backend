@@ -44,13 +44,16 @@ jobs:
           if [[ "${{ github.ref }}" == refs/tags/* ]]; then
             # Git tag
             TAG=${GITHUB_REF#refs/tags/}
+            echo "is_branch=false" >> $GITHUB_OUTPUT
           else
             # Branch name
             TAG=${GITHUB_REF#refs/heads/}
             # Replace / with - for valid image tags
             TAG=${TAG//\//-}
+            echo "is_branch=true" >> $GITHUB_OUTPUT
           fi
           echo "tag=${TAG}" >> $GITHUB_OUTPUT
+          echo "sha_short=$(echo ${{ github.sha }} | cut -c1-7)" >> $GITHUB_OUTPUT
           echo "Image tag will be: ${TAG}"
 
       - name: Build backend image
@@ -59,9 +62,17 @@ jobs:
       - name: Tag and push image
         run: |
           SOURCE_IMAGE="hualien_guangfu_backend-dev-backend"
-          TARGET_IMAGE="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/backend:${{ steps.meta.outputs.tag }}"
+          BASE_IMAGE="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/backend"
 
-          docker tag "${SOURCE_IMAGE}" "${TARGET_IMAGE}"
-          docker push "${TARGET_IMAGE}"
+          # Always tag and push with branch/tag name
+          docker tag "${SOURCE_IMAGE}" "${BASE_IMAGE}:${{ steps.meta.outputs.tag }}"
+          docker push "${BASE_IMAGE}:${{ steps.meta.outputs.tag }}"
+          echo "Pushed image: ${BASE_IMAGE}:${{ steps.meta.outputs.tag }}"
 
-          echo "Pushed image: ${TARGET_IMAGE}"
+          # For branches, also tag and push with branch-sha
+          if [[ "${{ steps.meta.outputs.is_branch }}" == "true" ]]; then
+            BRANCH_SHA_TAG="${{ steps.meta.outputs.tag }}-${{ steps.meta.outputs.sha_short }}"
+            docker tag "${SOURCE_IMAGE}" "${BASE_IMAGE}:${BRANCH_SHA_TAG}"
+            docker push "${BASE_IMAGE}:${BRANCH_SHA_TAG}"
+            echo "Pushed image: ${BASE_IMAGE}:${BRANCH_SHA_TAG}"
+          fi
