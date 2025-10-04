@@ -26,10 +26,10 @@ class TaskClaim(SQLModel, table=True):
     creator_id: UserId = Field(foreign_key='user.id')
     task_id: int = Field(foreign_key='task.id')
 
-    start_at: datetime | None = Field(title='開始時間', sa_column=Column(DateTime(timezone=True)))
-    complete_at: datetime | None = Field(title='完成時間', sa_column=Column(DateTime(timezone=True)))
-    notes: str | None
-    status: t.Annotated[str, TaskClaimStatus] = Field(default=TaskClaimStatus.claimed)
+    start_at: datetime | None = Field(description='開始時間', sa_column=Column(DateTime(timezone=True)))
+    complete_at: datetime | None = Field(description='完成時間', sa_column=Column(DateTime(timezone=True)))
+    notes: str | None = Field(default=None, description='備註')
+    status: t.Annotated[str, TaskClaimStatus] = Field(default=TaskClaimStatus.claimed, description='認領狀態')
 
     __table_args__ = (
         CheckConstraint(

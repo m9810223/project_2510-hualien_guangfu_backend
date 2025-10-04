@@ -1,7 +1,8 @@
 from fastapi import APIRouter
 
 from ..dependencies.user_dependency import CurrentActiveUserDepends
-from ..dependencies.user_dependency import auth_backend
+from ..dependencies.user_dependency import bearer_jwt_auth_backend
+from ..dependencies.user_dependency import cookie_jwt_auth_backend
 from ..dependencies.user_dependency import fastapi_users
 from ..schemas.user_schema import UserCreate
 from ..schemas.user_schema import UserRead
@@ -14,10 +15,21 @@ user_router = APIRouter()
 user_router.include_router(
     fastapi_users.get_register_router(UserRead, UserCreate),  # register
     prefix='/auth',
-    tags=['auth'],
+    tags=[
+        'auth',
+        '!click',  # TODO
+    ],
 )
 user_router.include_router(
-    fastapi_users.get_auth_router(auth_backend),  # login / logout
+    fastapi_users.get_auth_router(cookie_jwt_auth_backend),  # login / logout
+    prefix='/auth/cookie-jwt',
+    tags=[
+        'auth',
+        '!click',  # TODO
+    ],
+)
+user_router.include_router(
+    fastapi_users.get_auth_router(bearer_jwt_auth_backend),  # login / logout
     prefix='/auth/jwt',
     tags=['auth'],
 )

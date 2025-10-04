@@ -17,7 +17,10 @@ from ..schemas.task_schema import UpdateTaskSchema
 task_router = APIRouter()
 
 
-@task_router.post('/task_form/', tags=['task'])
+@task_router.post(
+    '/task_form/',
+    tags=['!click'],  # TODO
+)
 async def task_form(
     data: t.Annotated[CreateTaskSchema, Form()], user: CurrentActiveUserDepends, session: SessionDepends
 ) -> Task:
