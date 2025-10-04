@@ -1,0 +1,113 @@
+name: Compose Build → Retag → Push (GHCR)
+
+on:
+  push:
+    branches: ["main"]
+    tags:
+      - "v*.*.*"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  packages: write # 需要推到 GHCR
+
+env:
+  REGISTRY: ghcr.io
+  # 目標倉庫會是 ghcr.io/<owner>/<repo>/backend
+  IMAGE_REPO: ${{ github.repository }}/backend
+
+  # 你的 compose 設定（可依實況調整）
+  COMPOSE_FILE: docker-compose.yml
+  COMPOSE_SERVICE: backend
+
+  # 為了讓 CI build 出來的本機 image 名稱跟你本機一致
+  # 你的畫面顯示 repository 為 hualien_guangfu_backend-dev-backend:latest
+  # -> project name 應為 hualien_guangfu_backend-dev
+  COMPOSE_PROJECT_NAME: hualien_guangfu_backend-dev
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # 登入 GHCR（用內建 token）
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # 產生要推的 tag（branch、sha、semver、latest）
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_REPO }}
+          tags: |
+            type=ref,event=branch
+            type=sha
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=raw,value=latest,enable={{is_default_branch}}
+          labels: |
+            org.opencontainers.image.source=${{ github.repositoryUrl }}
+
+      # 用你的既有 compose 直接 build 該 service
+      - name: Build with docker compose
+        run: |
+          docker compose --project-name "${COMPOSE_PROJECT_NAME}" -f "${COMPOSE_FILE}" build "${COMPOSE_SERVICE}"
+          echo
+          echo "== Images after build =="
+          docker images | head -n 50
+
+      # 解析「本機 build 出來的 image 名稱」：
+      # 1) 若 compose 有明確寫 image:，就用那個
+      # 2) 否則落到 compose 預設：<project>-<service>:latest
+      - name: Resolve local image reference
+        id: localref
+        run: |
+          set -euo pipefail
+
+          # 試著從 compose config 撈 image 欄位（需要 jq；runner 內建）
+          LOCAL_IMAGE="$(docker compose --project-name "${COMPOSE_PROJECT_NAME}" -f "${COMPOSE_FILE}" config --format json \
+            | jq -r ".services.${COMPOSE_SERVICE}.image // empty")"
+
+          if [ -z "${LOCAL_IMAGE}" ] || [ "${LOCAL_IMAGE}" = "null" ]; then
+            # 預設命名（你提供的例子即是這種）
+            LOCAL_IMAGE="${COMPOSE_PROJECT_NAME}-${COMPOSE_SERVICE}:latest"
+          fi
+
+          echo "LOCAL_IMAGE=${LOCAL_IMAGE}" | tee -a "$GITHUB_OUTPUT"
+
+          # 取出 image ID（用來驗證 build 成果是否存在）
+          IMG_ID="$(docker image inspect --format='{{.Id}}' "${LOCAL_IMAGE}")"
+          echo "LOCAL_IMAGE_ID=${IMG_ID}" | tee -a "$GITHUB_OUTPUT"
+
+      # 重新標籤 → 推到 GHCR（針對 metadata-action 產生的每個 tag）
+      - name: Retag and Push
+        run: |
+          set -euo pipefail
+          SRC="${{ steps.localref.outputs.LOCAL_IMAGE }}"
+          DEST_PREFIX="${{ env.REGISTRY }}/${{ env.IMAGE_REPO }}"
+
+          echo "Source image: ${SRC}"
+          echo "Target repo:  ${DEST_PREFIX}"
+
+          # metadata-action 的 tags 以空白分隔，逐一處理
+          for TAG in ${{ steps.meta.outputs.tags }}; do
+            DEST="${DEST_PREFIX}:${TAG##*:}"  # 去掉 images 前綴，只保留 :tag 部分
+            echo "Retag -> ${DEST}"
+            docker tag "${SRC}" "${DEST}"
+            docker push "${DEST}"
+          done
+
+      - name: Summary
+        run: |
+          echo "Local image:   ${{ steps.localref.outputs.LOCAL_IMAGE }}"
+          echo "Image ID:      ${{ steps.localref.outputs.LOCAL_IMAGE_ID }}"
+          echo "Pushed tags:"
+          echo "${{ steps.meta.outputs.tags }}" | tr ' ' '\n'
