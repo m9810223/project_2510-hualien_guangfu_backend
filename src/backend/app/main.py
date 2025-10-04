@@ -3,11 +3,15 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 
+from .logger import get_logger
 from .routers.item_router import item_router
 from .routers.task_claim_router import task_claim_router
 from .routers.task_router import task_router
 from .routers.user_router import user_router
 from .settings.app_setting import app_settings
+
+
+logger = get_logger()
 
 
 @asynccontextmanager
@@ -22,7 +26,7 @@ app = FastAPI(
 )
 
 
-# Set all CORS enabled origins
+logger.info(f'allow_origins: {app_settings.all_cors_origins}')
 if app_settings.all_cors_origins:
     app.add_middleware(
         CORSMiddleware,
@@ -33,7 +37,13 @@ if app_settings.all_cors_origins:
     )
 
 
-app.include_router(task_claim_router)
-app.include_router(task_router)
-app.include_router(item_router)  # TODO
-app.include_router(user_router)
+app.include_router(task_claim_router, prefix=app_settings.API_V1_STR)
+app.include_router(task_router, prefix=app_settings.API_V1_STR)
+app.include_router(user_router, prefix=app_settings.API_V1_STR)
+
+app.include_router(item_router, prefix=app_settings.API_V1_STR, deprecated=True)
+
+
+app.include_router(task_claim_router, deprecated=True)
+app.include_router(task_router, deprecated=True)
+app.include_router(user_router, deprecated=True)

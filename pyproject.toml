@@ -74,8 +74,10 @@ lint.extend-select = [
 lint.extend-ignore = [
   "ANN401",
   "COM812",
+  "G004",
   "ISC001",
   "RET504", # Unnecessary assignment before return statement
+  "RUF001",
   "RUF003",
   "S101",   # Use of `assert` detected
   "TID252",

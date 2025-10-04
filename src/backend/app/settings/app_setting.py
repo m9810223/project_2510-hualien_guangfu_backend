@@ -27,7 +27,7 @@ class Settings(BaseSettings):
 
     @property
     def all_cors_origins(self) -> list[str]:
-        return [str(origin).rstrip('/') for origin in self.BACKEND_CORS_ORIGINS] + [self.FRONTEND_HOST]
+        return list({str(origin).rstrip('/') for origin in self.BACKEND_CORS_ORIGINS} | {self.FRONTEND_HOST})
 
 
 app_settings = Settings()

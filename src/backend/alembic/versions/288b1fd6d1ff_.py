@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: fa4d7a3c2710
-Revises:
-Create Date: 2025-10-03 20:51:57.720466
+Revision ID: 288b1fd6d1ff
+Revises: 
+Create Date: 2025-10-04 09:29:31.741610
 
 """
 
@@ -15,7 +15,7 @@ import fastapi_users_db_sqlalchemy
 
 
 # revision identifiers, used by Alembic.
-revision: str = 'fa4d7a3c2710'
+revision: str = '288b1fd6d1ff'
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -59,7 +59,7 @@ def upgrade() -> None:
     sa.Column('updated_at', sa.DateTime(timezone=True), nullable=True),
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('creator_id', sa.Uuid(), nullable=False),
-    sa.Column('type', sa.Enum('excavation', 'transportation', name='tasktype'), nullable=True),
+    sa.Column('type', sa.VARCHAR(), nullable=True),
     sa.Column('title', sqlmodel.sql.sqltypes.AutoString(), nullable=False),
     sa.Column('description', sqlmodel.sql.sqltypes.AutoString(), nullable=True),
     sa.Column('status', sa.Enum('preparing', 'working', 'done', name='taskstatus'), nullable=True),
