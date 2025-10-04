@@ -1,4 +1,4 @@
-#!/usr/bin/env hurl --test --repeat 1
+#!/usr/bin/env hurl --test --repeat 1 --variable backend_host=http://localhost:8000
 
 # register
 POST {{backend_host}}/api/v1/auth/register
