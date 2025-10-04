@@ -28,19 +28,19 @@ class Task(SQLModel, table=True):
 
     creator_id: UserId = Field(foreign_key='user.id', index=True)
 
-    type: t.Annotated[str, TaskType] | None = Field(title='任務類型')
-    title: str = Field(title='標題')
-    description: str | None = Field(title='簡單敘述')
-    status: t.Annotated[str, TaskStatus] | None = Field(title='任務狀態')
-    start_at: datetime | None = Field(title='開始時間', sa_column=Column(DateTime(timezone=True)))
-    deadline: datetime | None = Field(title='截止時間', sa_column=Column(DateTime(timezone=True)))
-    contact_number: str | None = Field(title='聯絡電話')
-    registration_location: str | None = Field(title='報到地點')
-    work_location: str | None = Field(title='工作地點')
-    required_number_of_people: int | None = Field(title='需求人數')
-    maximum_number_of_people: int | None = Field(title='最大人數')
-    urgency: t.Annotated[int, TaskUrgency] | None = Field(title='緊急程度')
-    danger_level: t.Annotated[int, TaskDangerLevel] | None = Field(title='危險程度')
+    type: t.Annotated[str, TaskType] | None = Field(description='任務類型')
+    title: str = Field(description='標題')
+    description: str | None = Field(description='簡單敘述')
+    status: t.Annotated[str, TaskStatus] | None = Field(description='任務狀態')
+    start_at: datetime | None = Field(description='開始時間', sa_column=Column(DateTime(timezone=True)))
+    deadline: datetime | None = Field(description='截止時間', sa_column=Column(DateTime(timezone=True)))
+    contact_number: str | None = Field(description='聯絡電話')
+    registration_location: str | None = Field(description='報到地點')
+    work_location: str | None = Field(description='工作地點')
+    required_number_of_people: int | None = Field(description='需求人數')
+    maximum_number_of_people: int | None = Field(description='最大人數')
+    urgency: t.Annotated[int, TaskUrgency] | None = Field(description='緊急程度')
+    danger_level: t.Annotated[int, TaskDangerLevel] | None = Field(description='危險程度')
 
     __table_args__ = (
         CheckConstraint(
