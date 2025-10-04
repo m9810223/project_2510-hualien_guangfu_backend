@@ -1,4 +1,7 @@
+import typing as t
+
 from fastapi import APIRouter
+from fastapi import Form
 
 from ..dependencies.user_dependency import CurrentActiveUserDepends
 from ..dependencies.user_dependency import bearer_jwt_auth_backend
@@ -15,17 +18,27 @@ user_router = APIRouter()
 user_router.include_router(
     fastapi_users.get_register_router(UserRead, UserCreate),  # register
     prefix='/auth',
+    tags=['auth'],
+)
+user_router.include_router(
+    fastapi_users.get_register_router(  # register
+        UserRead,
+        t.Annotated[UserCreate, Form()],  # pyright: ignore[reportArgumentType]
+    ),
+    prefix='/auth_form',
     tags=[
         'auth',
-        '!click',  # TODO
+        '!form',  # TODO
     ],
 )
+
+
 user_router.include_router(
     fastapi_users.get_auth_router(cookie_jwt_auth_backend),  # login / logout
     prefix='/auth/cookie-jwt',
     tags=[
         'auth',
-        '!click',  # TODO
+        '!form',  # TODO
     ],
 )
 user_router.include_router(
@@ -33,6 +46,8 @@ user_router.include_router(
     prefix='/auth/jwt',
     tags=['auth'],
 )
+
+
 user_router.include_router(
     fastapi_users.get_reset_password_router(),  # forgot / reset
     prefix='/auth',

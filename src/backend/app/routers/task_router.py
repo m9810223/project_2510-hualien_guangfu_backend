@@ -19,7 +19,7 @@ task_router = APIRouter()
 
 @task_router.post(
     '/task_form/',
-    tags=['!click'],  # TODO
+    tags=['!form'],  # TODO
 )
 async def task_form(
     data: t.Annotated[CreateTaskSchema, Form()], user: CurrentActiveUserDepends, session: SessionDepends
