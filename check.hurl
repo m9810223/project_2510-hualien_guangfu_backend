@@ -1,7 +1,7 @@
 #!/usr/bin/env hurl --test --repeat 1 --variable backend_host=https://hualien_guangfu_backend.m9h8.com
 
 # register
-POST {{backend_host}}/auth/register
+POST {{backend_host}}/api/v1/auth/register
 {
   "email": "user@example.com",
   "password": "string",
@@ -15,7 +15,7 @@ status >= 200
 status <= 400
 
 # login
-POST {{backend_host}}/auth/jwt/login
+POST {{backend_host}}/api/v1/auth/jwt/login
 content-type: application/x-www-form-urlencoded
 `grant_type=password&username=user%40example.com&password=string`
 HTTP 200
@@ -24,7 +24,7 @@ jsonpath "$.token_type" == "bearer"
 jsonpath "$.access_token" exists
 [Captures]
 access_token: jsonpath "$.access_token"
-GET {{backend_host}}/users/me
+GET {{backend_host}}/api/v1/users/me
 authorization: Bearer {{access_token}}
 HTTP 200
 [Asserts]
@@ -36,7 +36,7 @@ jsonpath "$.is_verified" == false
 
 
 # creat task
-POST {{backend_host}}/task
+POST {{backend_host}}/api/v1/task
 authorization: Bearer {{access_token}}
 {"title": "string"}
 HTTP 200
@@ -62,7 +62,7 @@ jsonpath "$.deleted_at" == null
 jsonpath "$.start_at" == null
 [Captures]
 task_id: jsonpath "$.id"
-GET {{backend_host}}/task/{{task_id}}
+GET {{backend_host}}/api/v1/task/{{task_id}}
 HTTP 200
 [Asserts]
 jsonpath "$.id" exists
@@ -86,7 +86,7 @@ jsonpath "$.deleted_at" == null
 jsonpath "$.start_at" == null
 
 # list task
-GET {{backend_host}}/task
+GET {{backend_host}}/api/v1/task
 [Query]
 page: 1
 itemsPerPage: 1
@@ -100,9 +100,9 @@ jsonpath "$.items_per_page" == 1
 
 
 # update task
-PATCH {{backend_host}}/task/{{task_id}}
+PATCH {{backend_host}}/api/v1/task/{{task_id}}
 HTTP 401
-PATCH {{backend_host}}/task/{{task_id}}
+PATCH {{backend_host}}/api/v1/task/{{task_id}}
 authorization: Bearer {{access_token}}
 {
   "type": "鏟土",
@@ -123,9 +123,9 @@ HTTP 200
 
 
 # create claim
-POST {{backend_host}}/task_claim
+POST {{backend_host}}/api/v1/task_claim
 HTTP 401
-POST {{backend_host}}/task_claim
+POST {{backend_host}}/api/v1/task_claim
 authorization: Bearer {{ access_token }}
 {
   "task_id": {{ task_id }},
@@ -148,7 +148,7 @@ jsonpath "$.notes" == "string"
 claim_id: jsonpath "$.id"
 
 # list claim
-GET {{backend_host}}/task_claim
+GET {{backend_host}}/api/v1/task_claim
 [Query]
 page: 1
 itemsPerPage: 1
@@ -161,7 +161,7 @@ jsonpath "$.page" == 1
 jsonpath "$.items_per_page" == 1
 
 # get claim
-GET {{backend_host}}/task_claim/{{claim_id}}
+GET {{backend_host}}/api/v1/task_claim/{{claim_id}}
 authorization: Bearer {{access_token}}
 {
   "task_id": {{task_id}},
@@ -170,17 +170,17 @@ authorization: Bearer {{access_token}}
 HTTP 200
 
 # delete claim
-DELETE {{backend_host}}/task_claim/{{claim_id}}
+DELETE {{backend_host}}/api/v1/task_claim/{{claim_id}}
 HTTP 401
-DELETE {{backend_host}}/task_claim/{{claim_id}}
+DELETE {{backend_host}}/api/v1/task_claim/{{claim_id}}
 authorization: Bearer {{access_token}}
 HTTP 200
 
 
 
 # delete task
-DELETE {{backend_host}}/task/{{task_id}}
+DELETE {{backend_host}}/api/v1/task/{{task_id}}
 HTTP 401
-DELETE {{backend_host}}/task/{{task_id}}
+DELETE {{backend_host}}/api/v1/task/{{task_id}}
 authorization: Bearer {{access_token}}
 HTTP 200

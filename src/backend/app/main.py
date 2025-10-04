@@ -39,10 +39,11 @@ if app_settings.all_cors_origins:
 
 app.include_router(task_claim_router, prefix=app_settings.API_V1_STR)
 app.include_router(task_router, prefix=app_settings.API_V1_STR)
-app.include_router(item_router, prefix=app_settings.API_V1_STR)  # TODO
 app.include_router(user_router, prefix=app_settings.API_V1_STR)
 
+app.include_router(item_router, prefix=app_settings.API_V1_STR, deprecated=True)
 
-app.include_router(task_claim_router)
-app.include_router(task_router)
-app.include_router(user_router)
+
+app.include_router(task_claim_router, deprecated=True)
+app.include_router(task_router, deprecated=True)
+app.include_router(user_router, deprecated=True)
