@@ -16,6 +16,7 @@ dependencies = [
   "fastapi-users[sqlalchemy]>=14.0.1",
   "fastcrud>=0.17",
   "httpx>=0.28.1",
+  "hypothesis>=6.140.2",
   "jinja2>=3.1.6",
   "psycopg2-binary>=2.9.10",
   "pydantic>=2.11.9",
@@ -24,4 +25,9 @@ dependencies = [
   "python-multipart>=0.0.20",
   "sqlmodel>=0.0.25",
   "uvicorn>=0.37",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.4.2",
 ]
