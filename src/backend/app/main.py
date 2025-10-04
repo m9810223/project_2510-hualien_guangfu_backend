@@ -23,6 +23,12 @@ app = FastAPI(
     lifespan=_lifespan,
     title=app_settings.PROJECT_NAME,
     openapi_url=f'{app_settings.API_V1_STR}/openapi.json',
+    swagger_ui_parameters={  # https://swagger.io/docs/open-source-tools/swagger-ui/usage/configuration/#parameters
+        'displayRequestDuration': True,
+        # display of vendor extension (x-) fields and values for Operations, Parameters, Responses, and Schema
+        'showExtensions': True,
+        'docExpansion': 'none',
+    },
 )
 
 
