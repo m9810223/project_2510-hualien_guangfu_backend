@@ -1,7 +1,19 @@
 services:
-  backend:
+  pgadmin:
     ports:
-      - 8000:8000
+      - 5050:5050
+    volumes:
+      - ./volumes/pgadmin/:/var/lib/pgadmin/
+
+  db:
+    # ports:
+    #   - 5432:5432
+    volumes:
+      - ./volumes/pgdata/:/var/lib/postgresql/data/pgdata/
+
+  backend:
+    # ports:
+    #   - 8000:8000
     command: [
         "uvicorn",
         "--host=0.0.0.0",
@@ -12,6 +24,8 @@ services:
       ]
     volumes:
       - ./src/backend/:/srv/backend/ # src code
+
+  #
 
   tunnel:
     image: cloudflare/cloudflared:2025.2.1
