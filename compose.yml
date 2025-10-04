@@ -2,6 +2,7 @@ name: ${PROJECT_NAME}-${ENV_NAME} # prefix for the container names, compose-buil
 
 services:
   pgadmin:
+    profiles: [pgadmin]
     image: dpage/pgadmin4:9.8
     environment: # https://www.pgadmin.org/docs/pgadmin4/9.8/container_deployment.html#environment-variables
       - PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL?}
@@ -27,3 +28,19 @@ services:
       #
       - SECRET_KEY=${SECRET_KEY?}
       - BACKEND_CORS_ORIGINS=${BACKEND_CORS_ORIGINS?}
+
+  #
+
+  tunnel:
+    profiles: [tunnel]
+    image: cloudflare/cloudflared:2025.2.1
+    tty: true
+    command:
+      - tunnel
+      - --loglevel=debug
+      # - --metrics=0.0.0.0:20241
+      - --no-autoupdate
+      - run
+      - --token
+      - ${CLOUDFLARED_TUNNEL_TOKEN}
+    # network_mode: host
