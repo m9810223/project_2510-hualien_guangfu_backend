@@ -1,4 +1,4 @@
-#!/usr/bin/env hurl --test --repeat 1 --variable backend_host=https://hualien_guangfu_backend.m9h8.com
+#!/usr/bin/env hurl --test --repeat 1 --variable backend_host=http://localhost:8000
 
 # register
 POST {{backend_host}}/api/v1/auth/register
@@ -66,24 +66,24 @@ GET {{backend_host}}/api/v1/task/{{task_id}}
 HTTP 200
 [Asserts]
 jsonpath "$.id" exists
-jsonpath "$.created_at" exists
-jsonpath "$.creator_id" exists
 jsonpath "$.title" == "string"
-jsonpath "$.is_deleted" == false
-jsonpath "$.registration_location" == null
-jsonpath "$.type" == null
-jsonpath "$.work_location" == null
-jsonpath "$.updated_at" == null
-jsonpath "$.required_number_of_people" == null
-jsonpath "$.maximum_number_of_people" == null
 jsonpath "$.description" == null
+jsonpath "$.type" == null # ?
+jsonpath "$.registration_location" == null # ?
+jsonpath "$.required_number_of_people" == null # ?
 jsonpath "$.deadline" == null
-jsonpath "$.urgency" == null
+jsonpath "$.creator_id" exists
 jsonpath "$.status" == null
-jsonpath "$.contact_number" == null
+jsonpath "$.created_at" exists
+jsonpath "$.updated_at" == null
 jsonpath "$.danger_level" == null
-jsonpath "$.deleted_at" == null
-jsonpath "$.start_at" == null
+jsonpath "$.is_deleted" == false # ?
+jsonpath "$.start_at" == null # ?
+jsonpath "$.contact_number" == null # ?
+jsonpath "$.work_location" == null # ?
+jsonpath "$.maximum_number_of_people" == null # ?
+jsonpath "$.urgency" == null # ?
+jsonpath "$.deleted_at" == null # ?
 
 # list task
 GET {{backend_host}}/api/v1/task

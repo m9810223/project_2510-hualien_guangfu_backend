@@ -1,6 +1,7 @@
 from datetime import datetime
 import typing as t
 
+from sqlmodel import CheckConstraint
 from sqlmodel import Column
 from sqlmodel import DateTime
 from sqlmodel import Field
@@ -28,4 +29,11 @@ class TaskClaim(SQLModel, table=True):
     start_at: datetime | None = Field(title='開始時間', sa_column=Column(DateTime(timezone=True)))
     complete_at: datetime | None = Field(title='完成時間', sa_column=Column(DateTime(timezone=True)))
     notes: str | None
-    status: TaskClaimStatus = Field(default=TaskClaimStatus.claimed)
+    status: t.Annotated[str, TaskClaimStatus] = Field(default=TaskClaimStatus.claimed)
+
+    __table_args__ = (
+        CheckConstraint(
+            f'status IN {tuple(x.value for x in TaskClaimStatus)}',
+            name='check_task_claim_status_valid',
+        ),
+    )

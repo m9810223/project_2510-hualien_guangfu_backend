@@ -1,7 +1,6 @@
 from datetime import datetime
 import typing as t
 
-from sqlmodel import VARCHAR
 from sqlmodel import CheckConstraint
 from sqlmodel import Column
 from sqlmodel import DateTime
@@ -29,16 +28,10 @@ class Task(SQLModel, table=True):
 
     creator_id: UserId = Field(foreign_key='user.id', index=True)
 
-    type: str | None = Field(
-        title='任務類型',
-        sa_column=Column(
-            VARCHAR(),
-            CheckConstraint(f'type IN {tuple(e.value for e in TaskType)}', name='check_task_type_valid'),
-        ),
-    )
+    type: t.Annotated[str, TaskType] | None = Field(title='任務類型')
     title: str = Field(title='標題')
     description: str | None = Field(title='簡單敘述')
-    status: TaskStatus | None = Field(title='任務狀態')
+    status: t.Annotated[str, TaskStatus] | None = Field(title='任務狀態')
     start_at: datetime | None = Field(title='開始時間', sa_column=Column(DateTime(timezone=True)))
     deadline: datetime | None = Field(title='截止時間', sa_column=Column(DateTime(timezone=True)))
     contact_number: str | None = Field(title='聯絡電話')
@@ -46,5 +39,24 @@ class Task(SQLModel, table=True):
     work_location: str | None = Field(title='工作地點')
     required_number_of_people: int | None = Field(title='需求人數')
     maximum_number_of_people: int | None = Field(title='最大人數')
-    urgency: TaskUrgency | None = Field(title='緊急程度')
-    danger_level: TaskDangerLevel | None = Field(title='危險程度')
+    urgency: t.Annotated[int, TaskUrgency] | None = Field(title='緊急程度')
+    danger_level: t.Annotated[int, TaskDangerLevel] | None = Field(title='危險程度')
+
+    __table_args__ = (
+        CheckConstraint(
+            f'type IN {tuple(x.value for x in TaskType)}',
+            name='check_task_type_valid_4',
+        ),
+        CheckConstraint(
+            f'status IN {tuple(x.value for x in TaskStatus)}',
+            name='check_task_status_valid',
+        ),
+        CheckConstraint(
+            f'urgency IN {tuple(x.value for x in TaskUrgency)}',
+            name='check_task_urgency_valid',
+        ),
+        CheckConstraint(
+            f'danger_level IN {tuple(x.value for x in TaskDangerLevel)}',
+            name='check_task_danger_level_valid',
+        ),
+    )

@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 288b1fd6d1ff
+Revision ID: 33667d931cc3
 Revises: 
-Create Date: 2025-10-04 09:29:31.741610
+Create Date: 2025-10-04 15:53:29.236570
 
 """
 
@@ -15,7 +15,7 @@ import fastapi_users_db_sqlalchemy
 
 
 # revision identifiers, used by Alembic.
-revision: str = '288b1fd6d1ff'
+revision: str = '33667d931cc3'
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -59,10 +59,10 @@ def upgrade() -> None:
     sa.Column('updated_at', sa.DateTime(timezone=True), nullable=True),
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('creator_id', sa.Uuid(), nullable=False),
-    sa.Column('type', sa.VARCHAR(), nullable=True),
+    sa.Column('type', sqlmodel.sql.sqltypes.AutoString(), nullable=True),
     sa.Column('title', sqlmodel.sql.sqltypes.AutoString(), nullable=False),
     sa.Column('description', sqlmodel.sql.sqltypes.AutoString(), nullable=True),
-    sa.Column('status', sa.Enum('preparing', 'working', 'done', name='taskstatus'), nullable=True),
+    sa.Column('status', sqlmodel.sql.sqltypes.AutoString(), nullable=True),
     sa.Column('start_at', sa.DateTime(timezone=True), nullable=True),
     sa.Column('deadline', sa.DateTime(timezone=True), nullable=True),
     sa.Column('contact_number', sqlmodel.sql.sqltypes.AutoString(), nullable=True),
@@ -70,8 +70,12 @@ def upgrade() -> None:
     sa.Column('work_location', sqlmodel.sql.sqltypes.AutoString(), nullable=True),
     sa.Column('required_number_of_people', sa.Integer(), nullable=True),
     sa.Column('maximum_number_of_people', sa.Integer(), nullable=True),
-    sa.Column('urgency', sa.Enum('low', 'medium', 'high', name='taskurgency'), nullable=True),
-    sa.Column('danger_level', sa.Enum('normal', 'medium', 'dangerous', name='taskdangerlevel'), nullable=True),
+    sa.Column('urgency', sa.Integer(), nullable=True),
+    sa.Column('danger_level', sa.Integer(), nullable=True),
+    sa.CheckConstraint("status IN ('準備中', '工作中', '已完成')", name='check_task_status_valid'),
+    sa.CheckConstraint("type IN ('鏟土', '搬運')", name='check_task_type_valid_4'),
+    sa.CheckConstraint('danger_level IN (10, 20, 30)', name='check_task_danger_level_valid'),
+    sa.CheckConstraint('urgency IN (10, 20, 30)', name='check_task_urgency_valid'),
     sa.ForeignKeyConstraint(['creator_id'], ['user.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
@@ -87,7 +91,8 @@ def upgrade() -> None:
     sa.Column('start_at', sa.DateTime(timezone=True), nullable=True),
     sa.Column('complete_at', sa.DateTime(timezone=True), nullable=True),
     sa.Column('notes', sqlmodel.sql.sqltypes.AutoString(), nullable=True),
-    sa.Column('status', sa.Enum('claimed', 'started', 'completed', 'cancelled', name='taskclaimstatus'), nullable=False),
+    sa.Column('status', sqlmodel.sql.sqltypes.AutoString(), nullable=False),
+    sa.CheckConstraint("status IN ('claimed', 'started', 'completed', 'cancelled')", name='check_task_claim_status_valid'),
     sa.ForeignKeyConstraint(['creator_id'], ['user.id'], ),
     sa.ForeignKeyConstraint(['task_id'], ['task.id'], ),
     sa.PrimaryKeyConstraint('id')
