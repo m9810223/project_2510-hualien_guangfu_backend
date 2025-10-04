@@ -1,4 +1,7 @@
+import typing as t
+
 from fastapi import APIRouter
+from fastapi import Form
 from fastcrud import FilterConfig
 from fastcrud import crud_router
 
@@ -12,6 +15,13 @@ from ..schemas.task_schema import UpdateTaskSchema
 
 
 task_router = APIRouter()
+
+
+@task_router.post('/task_form/', tags=['task'])
+async def task_form(
+    data: t.Annotated[CreateTaskSchema, Form()], user: CurrentActiveUserDepends, session: SessionDepends
+) -> Task:
+    return await create_task(data=data, user=user, session=session)
 
 
 @task_router.post(

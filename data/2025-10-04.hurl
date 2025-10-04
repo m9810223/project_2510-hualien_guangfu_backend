@@ -41,6 +41,8 @@ authorization: Bearer {{access_token}}
 {
 
   "title": "水電修繕（電力恢復、臨時配線、水管配管及化糞池等）：50名",
+  "required_number_of_people": 50,
+  "maximum_number_of_people": 50,
 
   "start_at": "2025-10-03T09:00:00+0800",
   "deadline": "2025-10-08T17:00:00+0800",
@@ -62,6 +64,8 @@ authorization: Bearer {{access_token}}
 {
 
   "title": "房屋修繕（泥作、門窗修補、牆面及地板修復）：50名",
+  "required_number_of_people": 50,
+  "maximum_number_of_people": 50,
 
   "start_at": "2025-10-03T09:00:00+0800",
   "deadline": "2025-10-08T17:00:00+0800",
@@ -83,6 +87,8 @@ authorization: Bearer {{access_token}}
 {
 
   "title": "機械維修（抽水機、發電機及其他機具維修）：50名",
+  "required_number_of_people": 50,
+  "maximum_number_of_people": 50,
 
   "start_at": "2025-10-03T09:00:00+0800",
   "deadline": "2025-10-08T17:00:00+0800",
@@ -105,6 +111,8 @@ authorization: Bearer {{access_token}}
 {
 
   "title": "清潔機具操作與支援  (大型清掃設備操作與協助 ) ：50名",
+  "required_number_of_people": 50,
+  "maximum_number_of_people": 50,
 
   "start_at": "2025-10-03T09:00:00+0800",
   "deadline": "2025-10-08T17:00:00+0800",
