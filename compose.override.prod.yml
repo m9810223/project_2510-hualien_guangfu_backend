@@ -1,6 +1,21 @@
+volumes:
+  pgadmin_data:
+  db_data:
+
 services:
-  db:
+  pgadmin:
+    ports:
+      - 5050:5050
     restart: always
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin/
+
+  db:
+    ports:
+      - 5432:5432
+    restart: always
+    volumes:
+      - db_data:/var/lib/postgresql/data/pgdata/
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 10s
@@ -9,4 +24,6 @@ services:
       timeout: 10s
 
   backend:
-    image: ${REGISTRY_IMAGE:-${PROJECT_NAME}}/app:${COMMIT_REF_SLUG:-local} # TODO
+    ports:
+      - 8000:8000
+    restart: always
