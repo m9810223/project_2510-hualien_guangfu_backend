@@ -1,6 +1,8 @@
 from datetime import datetime
 import typing as t
 
+from sqlmodel import VARCHAR
+from sqlmodel import CheckConstraint
 from sqlmodel import Column
 from sqlmodel import DateTime
 from sqlmodel import Field
@@ -27,7 +29,13 @@ class Task(SQLModel, table=True):
 
     creator_id: UserId = Field(foreign_key='user.id', index=True)
 
-    type: TaskType | None = Field(title='任務類型')
+    type: str | None = Field(
+        title='任務類型',
+        sa_column=Column(
+            VARCHAR(),
+            CheckConstraint(f'type IN {tuple(e.value for e in TaskType)}', name='check_task_type_valid'),
+        ),
+    )
     title: str = Field(title='標題')
     description: str | None = Field(title='簡單敘述')
     status: TaskStatus | None = Field(title='任務狀態')

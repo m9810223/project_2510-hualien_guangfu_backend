@@ -9,20 +9,32 @@ from ..enums.task_enum import TaskUrgency
 
 
 class CreateTaskSchema(BaseModel):
+    type: TaskType | None = None
     title: str
+    description: str | None = None
+    status: TaskStatus | None = None
+    start_at: datetime | None = None
+    deadline: datetime | None = None
+    contact_number: str | None = None
+    registration_location: str | None = None
+    work_location: str | None = None
+    required_number_of_people: int | None = None
+    maximum_number_of_people: int | None = None
+    urgency: TaskUrgency | None = None
+    danger_level: TaskDangerLevel | None = None
 
 
 class UpdateTaskSchema(BaseModel):
-    type: TaskType | None
+    type: TaskType | None = None
     title: str
-    description: str | None
-    status: TaskStatus | None
-    start_at: datetime | None
-    deadline: datetime | None
-    contact_number: str | None
-    registration_location: str | None
-    work_location: str | None
-    required_number_of_people: int | None
-    maximum_number_of_people: int | None
-    urgency: TaskUrgency | None
-    danger_level: TaskDangerLevel | None
+    description: str | None = None
+    status: TaskStatus | None = None
+    start_at: datetime | None = None
+    deadline: datetime | None = None
+    contact_number: str | None = None
+    registration_location: str | None = None
+    work_location: str | None = None
+    required_number_of_people: int | None = None
+    maximum_number_of_people: int | None = None
+    urgency: TaskUrgency | None = None
+    danger_level: TaskDangerLevel | None = None
