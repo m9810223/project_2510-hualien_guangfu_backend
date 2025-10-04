@@ -1,4 +1,9 @@
+volumes: {} # TODO
+
 services:
+  pgadmin:
+    restart: always
+
   db:
     restart: always
     healthcheck:
@@ -9,4 +14,4 @@ services:
       timeout: 10s
 
   backend:
-    image: ${REGISTRY_IMAGE:-${PROJECT_NAME}}/app:${COMMIT_REF_SLUG:-local} # TODO
+    restart: always
