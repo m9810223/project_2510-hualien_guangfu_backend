@@ -54,7 +54,7 @@ jobs:
           echo "Image tag will be: ${TAG}"
 
       - name: Build backend image
-        run: docker-compose build backend
+        run: docker compose build backend
 
       - name: Tag and push image
         run: |
