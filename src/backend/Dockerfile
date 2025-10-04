@@ -51,4 +51,4 @@ COPY ./${SRC}/${APP}/ /srv/${APP}/
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync
 
-CMD ["fastapi", "run", "--workers", "4", "app/main.py"]
+CMD [ "uvicorn", "--host=0.0.0.0", "--workers=4", "app.main:app" ]
