@@ -11,23 +11,18 @@ from ..schemas.user_schema import UserUpdate
 user_router = APIRouter()
 
 
-@user_router.get('/authenticated-route', tags=['auth'])
-async def authenticated_route(user: CurrentActiveUserDepends):
-    return {'message': f'Hello {user.email}!'}
-
-
 user_router.include_router(
-    fastapi_users.get_auth_router(auth_backend),  # pyright: ignore[reportArgumentType]
-    prefix='/auth/jwt',
-    tags=['auth'],
-)
-user_router.include_router(
-    fastapi_users.get_register_router(UserRead, UserCreate),
+    fastapi_users.get_register_router(UserRead, UserCreate),  # register
     prefix='/auth',
     tags=['auth'],
 )
 user_router.include_router(
-    fastapi_users.get_reset_password_router(),
+    fastapi_users.get_auth_router(auth_backend),  # login / logout
+    prefix='/auth/jwt',
+    tags=['auth'],
+)
+user_router.include_router(
+    fastapi_users.get_reset_password_router(),  # forgot / reset
     prefix='/auth',
     tags=['auth'],
 )
@@ -36,6 +31,13 @@ user_router.include_router(
     prefix='/auth',
     tags=['auth'],
 )
+
+
+@user_router.get('/authenticated-route', tags=['auth'])
+async def authenticated_route(user: CurrentActiveUserDepends):
+    return {'message': f'Hello {user.email}!'}
+
+
 user_router.include_router(
     fastapi_users.get_users_router(UserRead, UserUpdate),
     prefix='/users',
